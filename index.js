@@ -13,9 +13,17 @@ const axiosfun = async function () {
   const item = $("h1").text();
 
   console.log(item);
+  return item;
 };
 
-axiosfun();
+// axiosfun();
+
+app.get("/scrap", async (req, res) => {
+  // const query = req.query.query; // Get the query parameter from the request URL
+  const jobs = await axiosfun();
+
+  res.json(jobs);
+});
 
 // const scrapers = require("./scrapers");
 

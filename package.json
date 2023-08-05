@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "devStart": "nodemon index.js",
     "build": "npm install"
   },
   "keywords": [],
