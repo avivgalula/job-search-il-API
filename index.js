@@ -4,28 +4,40 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-const url = "https://books.toscrape.com/";
+const scrapers = require("./scrapers");
 
-const axiosfun = async function () {
-  console.log("Start scraping...");
-  const html = await axios(url);
-  const $ = cheerio.load(html.data);
-  const item = $("h1").text();
+// const url = "https://books.toscrape.com/";
+// const books_data = [];
 
-  console.log(item);
-  return item;
-};
+// const axiosfun = async function () {
+//   try {
+//     console.log("Start scraping...");
+//     const html = await axios(url);
+//     const $ = cheerio.load(html.data);
+//     const booksParentEl = $("article");
+
+//     booksParentEl.each(function () {
+//       title = $(this).find("h3 a").text();
+//       price = $(this).find(".price_color").text();
+//       stock = $(this).find(".availability").text().trim();
+
+//       books_data.push({ title, price, stock });
+//     });
+
+//     console.log(books_data);
+//   } catch (err) {
+//     console.error(err);
+//   }
+// };
 
 // axiosfun();
 
 app.get("/scrap", async (req, res) => {
   // const query = req.query.query; // Get the query parameter from the request URL
-  const jobs = await axiosfun();
+  const jobs = await scrapers.axiosfun();
 
   res.json(jobs);
 });
-
-// const scrapers = require("./scrapers");
 
 // app.get("/jobs/alljobs", async (req, res) => {
 //   // const query = req.query.query; // Get the query parameter from the request URL
