@@ -34,7 +34,7 @@ const scrapers = require("./scrapers");
 
 app.get("/scrap", async (req, res) => {
   // const query = req.query.query; // Get the query parameter from the request URL
-  const jobs = await scrapers.axiosfun();
+  const jobs = await scrapers.scrapeAllJobs("frontend");
 
   res.json(jobs);
 });

@@ -3,6 +3,7 @@ const cheerio = require("cheerio");
 
 const url = "https://books.toscrape.com/";
 const books_data = [];
+const jobs_data = [];
 
 const axiosfun = async function () {
   try {
@@ -26,4 +27,27 @@ const axiosfun = async function () {
   }
 };
 
-module.exports = { axiosfun };
+const scrapeAllJobs = async function (query) {
+  const url = `https://www.alljobs.co.il/SearchResultsGuest.aspx?page=1&position=&type=&freetxt=${query}&city=&region=`;
+  const html = await axios(url);
+  const $ = cheerio.load(html);
+  const jobPosts = $(".openboard-container-jobs .job-content-top");
+  console.log(html);
+
+  jobPosts.each(function () {
+    console.log("Start scraping...");
+    URL = $(this).find(".job-content-top-title a").attr("href");
+    if (!URL) URL = $(this).find(".job-content-top-title-ltr a").attr("href");
+    if (!URL)
+      URL = $(this).find(".job-content-top-title-highlight a").attr("href");
+
+    jobs_data.push({ URL });
+  });
+
+  return jobs_data;
+  console.log(jobs_data);
+};
+
+// scrapeAllJobs("frontend");
+
+module.exports = { scrapeAllJobs };
