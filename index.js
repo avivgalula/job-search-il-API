@@ -4,7 +4,8 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-const scrapers = require("./scrapers");
+// const scrapers = require("./scrapers");
+const scrapers = require("./scrapTest");
 
 // const url = "https://books.toscrape.com/";
 // const books_data = [];
@@ -34,9 +35,9 @@ const scrapers = require("./scrapers");
 
 app.get("/scrap", async (req, res) => {
   // const query = req.query.query; // Get the query parameter from the request URL
-  const jobs = await scrapers.scrapeAllJobs("frontend");
+  const jobs = await scrapers.scrapTest();
 
-  res.json(jobs);
+  res.json({ html: jobs });
 });
 
 // app.get("/jobs/alljobs", async (req, res) => {

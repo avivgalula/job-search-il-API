@@ -32,7 +32,6 @@ const scrapeAllJobs = async function (query) {
   const html = await axios(url);
   const $ = cheerio.load(html);
   const jobPosts = $(".openboard-container-jobs .job-content-top");
-  console.log(html);
 
   jobPosts.each(function () {
     console.log("Start scraping...");
@@ -44,10 +43,10 @@ const scrapeAllJobs = async function (query) {
     jobs_data.push({ URL });
   });
 
-  return jobs_data;
+  return "sds";
   console.log(jobs_data);
 };
 
-// scrapeAllJobs("frontend");
+scrapeAllJobs("frontend");
 
 module.exports = { scrapeAllJobs };
