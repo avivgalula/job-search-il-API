@@ -27,7 +27,7 @@ const axiosfun = async function () {
   }
 };
 
-const scrapeAllJobs = async function (query) {
+const scrapeAllJobs = async function (query = "frontend") {
   const url = `https://www.alljobs.co.il/SearchResultsGuest.aspx?page=1&position=&type=&freetxt=${query}&city=&region=`;
   const html = await axios(url);
   const $ = cheerio.load(html);
@@ -47,6 +47,6 @@ const scrapeAllJobs = async function (query) {
   console.log(jobs_data);
 };
 
-scrapeAllJobs("frontend");
+// scrapeAllJobs("frontend");
 
 module.exports = { scrapeAllJobs };

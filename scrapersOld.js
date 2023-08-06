@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer");
 
-const scrapeAllJobs = async function (query) {
+const scrapeAllJobs = async function (query = "frontend") {
   const browser = await puppeteer.launch({
     headless: "new",
     args: [
