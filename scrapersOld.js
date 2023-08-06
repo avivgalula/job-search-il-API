@@ -14,6 +14,7 @@ const scrapeAllJobs = async function (query = "frontend") {
         ? process.env.PUPPETEER_EXECUTABLE_PATH
         : puppeteer.executablePath(),
   });
+  console.log("Start scraping...");
   try {
     const page = await browser.newPage();
     await page.goto(
