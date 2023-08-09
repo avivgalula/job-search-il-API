@@ -1,5 +1,6 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
+const { URL } = require("url");
 
 const url = "https://books.toscrape.com/";
 const books_data = [];
@@ -36,10 +37,11 @@ const scrapeAllJobs = async function (query = "frontend") {
 
   jobPosts.each(function () {
     // Scrap URL
-    URL = $(this).find(".job-content-top-title a").attr("href");
-    if (!URL) URL = $(this).find(".job-content-top-title-ltr a").attr("href");
-    if (!URL)
-      URL = $(this).find(".job-content-top-title-highlight a").attr("href");
+    linkURL = $(this).find(".job-content-top-title a").attr("href");
+    if (!linkURL)
+      linkURL = $(this).find(".job-content-top-title-ltr a").attr("href");
+    if (!linkURL)
+      linkURL = $(this).find(".job-content-top-title-highlight a").attr("href");
 
     // Scrap title
     title = $(this).find(".job-content-top-title h3").text();
@@ -77,7 +79,14 @@ const scrapeAllJobs = async function (query = "frontend") {
       location = $(".job-content-top-location a").text();
     }
 
-    jobs_data.push({ title, URL, description, publishTime, type, location });
+    jobs_data.push({
+      title,
+      linkURL,
+      description,
+      publishTime,
+      type,
+      location,
+    });
   });
 
   // console.log(jobs_data);
