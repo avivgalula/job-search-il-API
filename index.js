@@ -1,10 +1,12 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 const express = require("express");
+const cors = require("cors");
+const scrapers = require("./scrapers");
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-const scrapers = require("./scrapers");
+app.use(cors());
 
 app.get("/scrap", async (req, res) => {
   // const query = req.query.query; // Get the query parameter from the request URL
