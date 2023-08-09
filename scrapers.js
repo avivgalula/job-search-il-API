@@ -35,19 +35,52 @@ const scrapeAllJobs = async function (query = "frontend") {
   const jobPosts = $(".openboard-container-jobs .job-content-top");
 
   jobPosts.each(function () {
-    title = $(this).find(".job-content-top-title h3").text();
-    if (!title) title = $(this).find(".job-content-top-title-ltr h3").text();
-    if (!title) title = $(this).find(".job-content-top-title-highlight").text();
-
+    // Scrap URL
     URL = $(this).find(".job-content-top-title a").attr("href");
     if (!URL) URL = $(this).find(".job-content-top-title-ltr a").attr("href");
     if (!URL)
       URL = $(this).find(".job-content-top-title-highlight a").attr("href");
 
-    jobs_data.push({ title, URL });
+    // Scrap title
+    title = $(this).find(".job-content-top-title h3").text();
+    if (!title) title = $(this).find(".job-content-top-title-ltr h3").text();
+    if (!title) title = $(this).find(".job-content-top-title-highlight").text();
+
+    // Scrap description
+    description = $(this).find(".job-content-top-desc.AR").text();
+    if (!description)
+      description = $(this).find(".job-content-top-desc.AL").text();
+
+    // Scrap publish time
+    publishTime = $(this).find(".job-content-top-date").text();
+
+    // Scrap type
+    type = $(this).find(".job-content-top-type").text();
+    if (!type) type = $(this).find(".job-content-top-type-ltr").text();
+
+    // Scrap location
+    let location;
+    // Get the parent element of the locations
+    const locationsParent = $(this).find(".job-regions-content");
+    if (locationsParent.length > 0) {
+      // Get all the location elements
+      const locationArr = locationsParent.find("a");
+
+      // Get the location(s) text
+      location = locationArr
+        .map((index, loc) => $(loc).text())
+        .get()
+        .join(", ");
+    }
+
+    if (!location) {
+      location = $(".job-content-top-location a").text();
+    }
+
+    jobs_data.push({ title, URL, description, publishTime, type, location });
   });
 
-  console.log(jobs_data);
+  // console.log(jobs_data);
   return jobs_data;
 };
 

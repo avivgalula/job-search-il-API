@@ -1,3 +1,0 @@
-// scrapTest();
-
-// module.exports = { scrapTest };
