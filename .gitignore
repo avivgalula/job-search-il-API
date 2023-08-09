@@ -1,2 +1,5 @@
 /node_modules
 /package-lock.json
+/scrapersOld.json
+/scarpTest.js
+/writeToFile.js

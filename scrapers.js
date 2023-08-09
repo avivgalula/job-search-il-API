@@ -30,21 +30,25 @@ const axiosfun = async function () {
 const scrapeAllJobs = async function (query = "frontend") {
   const url = `https://www.alljobs.co.il/SearchResultsGuest.aspx?page=1&position=&type=&freetxt=${query}&city=&region=`;
   const html = await axios(url);
-  const $ = cheerio.load(html);
+  const $ = cheerio.load(html.data);
+  console.log("Start scraping...");
   const jobPosts = $(".openboard-container-jobs .job-content-top");
 
   jobPosts.each(function () {
-    console.log("Start scraping...");
+    title = $(this).find(".job-content-top-title h3").text();
+    if (!title) title = $(this).find(".job-content-top-title-ltr h3").text();
+    if (!title) title = $(this).find(".job-content-top-title-highlight").text();
+
     URL = $(this).find(".job-content-top-title a").attr("href");
     if (!URL) URL = $(this).find(".job-content-top-title-ltr a").attr("href");
     if (!URL)
       URL = $(this).find(".job-content-top-title-highlight a").attr("href");
 
-    jobs_data.push({ URL });
+    jobs_data.push({ title, URL });
   });
 
-  return "sds";
   console.log(jobs_data);
+  return jobs_data;
 };
 
 // scrapeAllJobs("frontend");
