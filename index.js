@@ -8,19 +8,19 @@ const PORT = process.env.PORT || 8000;
 
 app.use(cors());
 
-app.get("/scrap", async (req, res) => {
-  // const query = req.query.query; // Get the query parameter from the request URL
-  const jobs = await scrapers.scrapeAllJobs();
-
-  res.json(jobs);
-});
-
-// app.get("/jobs/alljobs", async (req, res) => {
+// app.get("/scrap", async (req, res) => {
 //   // const query = req.query.query; // Get the query parameter from the request URL
-//   const jobs = await scrapers.scrapeAllJobs("מנהל סושיאל");
+//   const jobs = await scrapers.scrapeAllJobs();
 
 //   res.json(jobs);
 // });
+
+app.get("/jobs/alljobs", async (req, res) => {
+  const query = req.query.search; // Get the query parameter from the request URL
+  const jobs = await scrapers.scrapeAllJobs(query);
+
+  res.json(jobs);
+});
 
 app.get("/", (req, res) => {
   res.json({ hello: "hi" });

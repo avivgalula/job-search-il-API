@@ -28,7 +28,7 @@ const axiosfun = async function () {
   }
 };
 
-const scrapeAllJobs = async function (query = "frontend") {
+const scrapeAllJobs = async function (query) {
   const url = `https://www.alljobs.co.il/SearchResultsGuest.aspx?page=1&position=&type=&freetxt=${query}&city=&region=`;
   const html = await axios(url);
   const $ = cheerio.load(html.data);
@@ -37,21 +37,32 @@ const scrapeAllJobs = async function (query = "frontend") {
 
   jobPosts.each(function () {
     // Scrap URL
-    linkURL = $(this).find(".job-content-top-title a").attr("href");
-    if (!linkURL)
-      linkURL = $(this).find(".job-content-top-title-ltr a").attr("href");
-    if (!linkURL)
-      linkURL = $(this).find(".job-content-top-title-highlight a").attr("href");
+    link = $(this).find(".job-content-top-title a").attr("href");
+    if (!link) link = $(this).find(".job-content-top-title-ltr a").attr("href");
+    if (!link)
+      link = $(this).find(".job-content-top-title-highlight a").attr("href");
+    link = `https://www.alljobs.co.il${link}`;
 
     // Scrap title
     title = $(this).find(".job-content-top-title h3").text();
     if (!title) title = $(this).find(".job-content-top-title-ltr h3").text();
     if (!title) title = $(this).find(".job-content-top-title-highlight").text();
+    title = title.replace(/\s+/g, " ");
 
     // Scrap description
-    description = $(this).find(".job-content-top-desc.AR").text();
+    description = $(this).find(".job-content-top-desc.AR").html();
     if (!description)
-      description = $(this).find(".job-content-top-desc.AL").text();
+      description = $(this).find(".job-content-top-desc.AL").html();
+    // Replace <br> with a newline character
+    description = description.replace(/<br>/g, "\n");
+    // Remove all remaining HTML tags
+    description = description.replace(/<\/?[^>]+(>|$)/g, "");
+    // Replace &nbsp; with a regular space character
+    description = description.replace(/&nbsp;/g, " ");
+    // Insert a new line before "Requirements:"
+    description = description.replace("Requirements:", "\n\nRequirements:");
+    // Insert a new line before "דרישות:"
+    description = description.replace("דרישות:", "\n\nדרישות:");
 
     // Scrap publish time
     publishTime = $(this).find(".job-content-top-date").text();
@@ -59,29 +70,25 @@ const scrapeAllJobs = async function (query = "frontend") {
     // Scrap type
     type = $(this).find(".job-content-top-type").text();
     if (!type) type = $(this).find(".job-content-top-type-ltr").text();
+    type = type.replace(/\s+/g, " ");
+    type = type.replace("סוג משרה:", "");
+    type = type.replace("Job Type:", "").trim();
 
     // Scrap location
-    let location;
-    // Get the parent element of the locations
-    const locationsParent = $(this).find(".job-regions-content");
-    if (locationsParent.length > 0) {
-      // Get all the location elements
-      const locationArr = locationsParent.find("a");
-
-      // Get the location(s) text
-      location = locationArr
-        .map((index, loc) => $(loc).text())
-        .get()
-        .join(", ");
-    }
-
-    if (!location) {
-      location = $(".job-content-top-location a").text();
-    }
+    let location = [];
+    // 1) Get locations list
+    let locationsEl = $(this).find(".job-content-top-location a");
+    if (locationsEl.html() === null)
+      locationsEl = $(this).find(".job-content-top-location-ltr a");
+    // 2) Push loctaions
+    if (locationsEl)
+      locationsEl.each(function () {
+        location.push($(this).text());
+      });
 
     jobs_data.push({
       title,
-      linkURL,
+      link,
       description,
       publishTime,
       type,
