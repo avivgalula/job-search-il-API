@@ -4,7 +4,6 @@ const { URL } = require("url");
 
 const url = "https://books.toscrape.com/";
 const books_data = [];
-const jobs_data = [];
 
 const axiosfun = async function () {
   try {
@@ -29,6 +28,7 @@ const axiosfun = async function () {
 };
 
 const scrapeAllJobs = async function (query) {
+  const jobs_data = [];
   const url = `https://www.alljobs.co.il/SearchResultsGuest.aspx?page=1&position=&type=&freetxt=${query}&city=&region=`;
   const html = await axios(url);
   const $ = cheerio.load(html.data);
