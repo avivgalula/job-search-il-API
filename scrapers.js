@@ -2,57 +2,49 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const { URL } = require("url");
 
-const url = "https://books.toscrape.com/";
-const books_data = [];
-
-const axiosfun = async function () {
-  try {
-    console.log("Start scraping...");
-    const html = await axios(url);
-    const $ = cheerio.load(html.data);
-    const booksParentEl = $("article");
-
-    booksParentEl.each(function () {
-      title = $(this).find("h3 a").text();
-      price = $(this).find(".price_color").text();
-      stock = $(this).find(".availability").text().trim();
-
-      books_data.push({ title, price, stock });
-    });
-
-    // console.log(books_data);
-    return books_data;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-const scrapeAllJobs = async function (query) {
-  const jobs_data = [];
+const getAllJobs = async function (query) {
   const url = `https://www.alljobs.co.il/SearchResultsGuest.aspx?page=1&position=&type=&freetxt=${query}&city=&region=`;
+  console.log("Start scraping AllJobs...");
   const html = await axios(url);
   const $ = cheerio.load(html.data);
-  console.log("Start scraping...");
+  const jobs_data = [];
   const jobPosts = $(".openboard-container-jobs .job-content-top");
 
-  jobPosts.each(function () {
-    // Scrap URL
-    link = $(this).find(".job-content-top-title a").attr("href");
-    if (!link) link = $(this).find(".job-content-top-title-ltr a").attr("href");
-    if (!link)
-      link = $(this).find(".job-content-top-title-highlight a").attr("href");
+  // Helper
+  const findElement = function (parentEl, queries) {
+    let childEl;
+    let helper;
+    queries.forEach((query) => {
+      if (!helper) {
+        childEl = $(parentEl).find(query);
+        helper = $(parentEl).find(query).text();
+      }
+    });
+    return childEl;
+  };
+
+  jobPosts.each((i, post) => {
+    // // Scrap URL
+    link = findElement(post, [
+      ".job-content-top-title a",
+      ".job-content-top-title-ltr a",
+      ".job-content-top-title-highlight a",
+    ]).attr("href");
     link = `https://www.alljobs.co.il${link}`;
 
     // Scrap title
-    title = $(this).find(".job-content-top-title h3").text();
-    if (!title) title = $(this).find(".job-content-top-title-ltr h3").text();
-    if (!title) title = $(this).find(".job-content-top-title-highlight").text();
+    title = findElement(post, [
+      ".job-content-top-title h3",
+      ".job-content-top-title-ltr h3",
+      ".job-content-top-title-highlight",
+    ]).text();
     title = title.replace(/\s+/g, " ");
 
-    // Scrap description
-    description = $(this).find(".job-content-top-desc.AR").html();
-    if (!description)
-      description = $(this).find(".job-content-top-desc.AL").html();
+    // // Scrap description
+    description = findElement(post, [
+      ".job-content-top-desc.AR",
+      ".job-content-top-desc.AL",
+    ]).html();
     // Replace <br> with a newline character
     description = description.replace(/<br>/g, "\n");
     // Remove all remaining HTML tags
@@ -64,23 +56,28 @@ const scrapeAllJobs = async function (query) {
     // Insert a new line before "דרישות:"
     description = description.replace("דרישות:", "\n\nדרישות:");
 
-    // Scrap publish time
-    publishTime = $(this).find(".job-content-top-date").text();
+    // // Scrap publish time
+    publishTime = findElement(post, [".job-content-top-date"]).text().trim();
 
-    // Scrap type
-    type = $(this).find(".job-content-top-type").text();
-    if (!type) type = $(this).find(".job-content-top-type-ltr").text();
-    type = type.replace(/\s+/g, " ");
-    type = type.replace("סוג משרה:", "");
-    type = type.replace("Job Type:", "").trim();
+    // // Scrap type
+    type = findElement(post, [
+      ".job-content-top-type",
+      ".job-content-top-type-ltr",
+    ])
+      .text()
+      .replace(/\s+/g, " ")
+      .replace("סוג משרה:", "")
+      .replace("Job Type:", "")
+      .trim();
 
-    // Scrap location
+    // // Scrap location
     let location = [];
-    // 1) Get locations list
-    let locationsEl = $(this).find(".job-content-top-location a");
-    if (locationsEl.html() === null)
-      locationsEl = $(this).find(".job-content-top-location-ltr a");
-    // 2) Push loctaions
+    // // 1) Get locations list
+    locationsEl = findElement(post, [
+      ".job-content-top-location a",
+      ".job-content-top-location-ltr a",
+    ]);
+    // // 2) Push loctaions
     if (locationsEl)
       locationsEl.each(function () {
         location.push($(this).text());
@@ -96,10 +93,9 @@ const scrapeAllJobs = async function (query) {
     });
   });
 
-  // console.log(jobs_data);
   return jobs_data;
 };
 
 // scrapeAllJobs("frontend");
 
-module.exports = { scrapeAllJobs };
+module.exports = { getAllJobs };
