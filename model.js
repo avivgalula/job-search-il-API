@@ -32,7 +32,7 @@ const getDrushim = async function (query, page = 1) {
     });
   } catch (err) {
     console.error(err);
-    return err;
+    throw err;
   }
 };
 
