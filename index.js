@@ -11,7 +11,7 @@ app.use(cors());
 
 app.get("/jobs/alljobs", async (req, res) => {
   const query = req.query.search;
-  const jobs = await scrapers.getAllJobs(query);
+  const jobs = await model.getAllJobs(query);
   console.log("jobs");
   console.log(jobs);
 
@@ -20,7 +20,7 @@ app.get("/jobs/alljobs", async (req, res) => {
 
 app.get("/jobs/jobmaster", async (req, res) => {
   const query = req.query.search;
-  const jobs = await scrapers.getJobMaster(query);
+  const jobs = await model.getJobMaster(query);
 
   res.json(jobs);
 });
