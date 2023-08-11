@@ -1,5 +1,6 @@
 const getDrushim = async function (query, page = 1) {
   let _page = page - 2;
+  console.log("Start fetching Drushim...");
   const response = await fetch(
     `https://www.drushim.co.il/api/jobs/search?searchTerm=${query}&page=${_page}`
   );

@@ -49,13 +49,7 @@ const getAllJobs = async function (query, page = 1) {
       ".job-content-top-desc.AR",
       ".job-content-top-desc.AL",
     ]).html();
-    // // Replace <br> with a newline character
-    // postJobInfo = postJobInfo.replace(/<br>/g, "\n");
-    // // Remove all remaining HTML tags
-    // postJobInfo = postJobInfo.replace(/<\/?[^>]+(>|$)/g, "");
-    // // Replace &nbsp; with a regular space character
-    // postJobInfo = postJobInfo.replace(/&nbsp;/g, " ");
-    // slice info
+
     if (postJobInfo.includes("דרישות:")) {
       description = postJobInfo.slice(0, postJobInfo.indexOf("דרישות:"));
       requirements = postJobInfo.slice(
@@ -109,7 +103,6 @@ const getAllJobs = async function (query, page = 1) {
     });
   });
 
-  // console.log(jobs_data);
   return jobs_data;
 };
 
