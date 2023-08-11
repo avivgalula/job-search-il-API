@@ -27,9 +27,16 @@ app.get("/jobs/jobmaster", async (req, res) => {
 
 app.get("/jobs/drushim", async (req, res) => {
   const query = req.query.search;
-  const jobs = await model.getDrushim(query);
+  try {
+    const jobs = await model.getDrushim(query);
 
-  res.json(jobs);
+    res.json(jobs);
+  } catch (err) {
+    console.error("Error fetching all jobs:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching the jobs." });
+  }
 });
 
 app.get("/", (req, res) => {
