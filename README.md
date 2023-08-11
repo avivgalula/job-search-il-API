@@ -1,5 +1,5 @@
 # scraping-server
-scraping
+IL Job scraping API
 
 # Endpoints
 ENDPOINT:https://scraping-server.onrender.com/jobs/website?search=query&page=number
