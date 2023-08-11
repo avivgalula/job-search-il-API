@@ -5,4 +5,4 @@ IL Job scraping API
 ENDPOINT:https://scraping-server.onrender.com/jobs/website?search=query&page=number
 * website: alljobs/jobmaster/drushim
 * query: search query for jobs
-* number: number of the results page
+* number: page number of the results
