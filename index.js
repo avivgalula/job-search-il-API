@@ -32,10 +32,8 @@ app.get("/jobs/drushim", async (req, res) => {
 
     res.json(jobs);
   } catch (err) {
-    console.error("Error fetching all jobs:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while fetching the jobs." });
+    console.error("Error fetching all jobs:", err);
+    res.status(500).json({ err: "An error occurred while fetching the jobs." });
   }
 });
 
