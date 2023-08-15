@@ -23,7 +23,7 @@ const getDrushim = async function (query, page = 1) {
       const description = j.JobContent.Description;
       const requirements = j.JobContent.Requirements;
       const publishTime = j.JobInfo.JumpDateString;
-      const type = j.JobContent.Scopes.NameInHebrew;
+      const type = j.JobContent.Scopes[0].NameInHebrew;
       const location = [j.JobContent.Addresses[0].City];
       return {
         id,
@@ -200,6 +200,11 @@ const getJobMaster = async function (query, page = 1) {
 
     const jobDataPromises = jobPosts.map(async (i, post) => {
       try {
+        // Check if the post has the class name "Mekudam"
+        if ($(post).hasClass("Mekudam")) {
+          return null; // Skip this job post
+        }
+
         // Scrap URL
         link = findElement(post, [".CardHeader"]).attr("href");
         link = `https://www.jobmaster.co.il/${link}`;
@@ -251,7 +256,11 @@ const getJobMaster = async function (query, page = 1) {
     // Wait for all promises to resolve
     const jobsData = await Promise.all(jobDataPromises);
 
-    return jobsData;
+    // Filter out null values (skipped job posts)
+    const filteredJobsData = jobsData.filter((job) => job !== null);
+
+    // console.log(filteredJobsData);
+    return filteredJobsData;
   } catch (err) {
     console.error(err);
     throw err;
