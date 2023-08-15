@@ -23,7 +23,7 @@ const getDrushim = async function (query, page = 1) {
       const description = j.JobContent.Description;
       const requirements = j.JobContent.Requirements;
       const publishTime = j.JobInfo.JumpDateString;
-      const type = j.JobContent.Scopes.NameInHebrew;
+      const type = j.JobContent.Scopes[0].NameInHebrew;
       const location = [j.JobContent.Addresses[0].City];
       return {
         id,
@@ -268,5 +268,3 @@ const getJobMaster = async function (query, page = 1) {
 };
 
 module.exports = { getAllJobs, getJobMaster, getDrushim };
-
-// getJobMaster("חשמלאי", 1);
