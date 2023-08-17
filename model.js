@@ -106,8 +106,8 @@ const getAllJobs = async function (query, page = 1) {
           postJobInfo.indexOf("Requirements:") + "Requirements:".length
         );
       }
-      // requirements = requirements.slice(postJobInfo.indexOf("Requirements:"));
-      // requirements = "";
+
+      description = description.slice(5, -21);
 
       // // Scrap publish time
       publishTime = findElement(post, [".job-content-top-date"]).text().trim();
