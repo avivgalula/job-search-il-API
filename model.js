@@ -108,6 +108,22 @@ const getAllJobs = async function (query, page = 1) {
       }
 
       description = description.slice(5, -21);
+      // requirements = requirements.replace("</div>", "");
+      // requirements = requirements.replace("<div>", "");
+      // requirements = requirements.replace("</div><div>", "");
+      if (
+        requirements.includes(
+          `<div class="position-intended-for">.המשרה מיועדת לנשים ולגברים כאחד`
+        )
+      ) {
+        const removeIndex = requirements.indexOf(
+          `<div class="position-intended-for">.המשרה מיועדת לנשים ולגברים כאחד`
+        );
+        requirements = requirements.slice(0, removeIndex);
+      } else if (requirements.includes(`</div><div></div></div>`)) {
+        const removeIndex = requirements.indexOf(`</div><div></div></div>`);
+        requirements = requirements.slice(0, removeIndex);
+      }
 
       // // Scrap publish time
       publishTime = findElement(post, [".job-content-top-date"]).text().trim();
