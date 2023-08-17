@@ -125,6 +125,8 @@ const getAllJobs = async function (query, page = 1) {
         requirements = requirements.slice(0, removeIndex);
       }
 
+      requirements = requirements.slice(9, -1);
+
       // // Scrap publish time
       publishTime = findElement(post, [".job-content-top-date"]).text().trim();
 
